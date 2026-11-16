@@ -1,0 +1,37 @@
+digraph "Mobile number (NFA)" {
+  rankdir=LR; bgcolor=white;
+  node [shape=circle fontname="Helvetica" fontsize=11];
+  edge [fontname="Helvetica" fontsize=10];
+  start [shape=point width=0.08];
+  "c1" [shape=circle];
+  "c2" [shape=circle];
+  "n0" [shape=circle];
+  "n1" [shape=circle];
+  "n2" [shape=circle];
+  "n3" [shape=circle];
+  "n4" [shape=circle];
+  "n5" [shape=circle];
+  "n6" [shape=circle];
+  "n7" [shape=circle];
+  "n8" [shape=circle];
+  "n9" [shape=circle];
+  "n10" [shape=doublecircle];
+  "s" [shape=circle];
+  start -> "s";
+  "s" -> "c1" [label="+"];
+  "c1" -> "c2" [label="9"];
+  "s" -> "c2" [label="9"];
+  "s" -> "n1" [label="6-9"];
+  "c2" -> "n0" [label="1"];
+  "s" -> "n0" [label="0"];
+  "n0" -> "n1" [label="6-9"];
+  "n1" -> "n2" [label="0-9"];
+  "n2" -> "n3" [label="0-9"];
+  "n3" -> "n4" [label="0-9"];
+  "n4" -> "n5" [label="0-9"];
+  "n5" -> "n6" [label="0-9"];
+  "n6" -> "n7" [label="0-9"];
+  "n7" -> "n8" [label="0-9"];
+  "n8" -> "n9" [label="0-9"];
+  "n9" -> "n10" [label="0-9"];
+}

@@ -1,0 +1,29 @@
+digraph "Vehicle number (shape)" {
+  rankdir=LR; bgcolor=white;
+  node [shape=circle fontname="Helvetica" fontsize=11];
+  edge [fontname="Helvetica" fontsize=10];
+  start [shape=point width=0.08];
+  "v0" [shape=circle];
+  "v1" [shape=circle];
+  "v2" [shape=circle];
+  "v3" [shape=circle];
+  "v4" [shape=circle];
+  "v5" [shape=circle];
+  "v6" [shape=circle];
+  "n1" [shape=circle];
+  "n2" [shape=circle];
+  "n3" [shape=circle];
+  "n4" [shape=doublecircle];
+  start -> "v0";
+  "v0" -> "v1" [label="A"];
+  "v1" -> "v2" [label="A"];
+  "v2" -> "v3" [label="D"];
+  "v3" -> "v4" [label="D"];
+  "v4" -> "v5" [label="A"];
+  "v5" -> "v6" [label="A"];
+  "v5" -> "n1" [label="D"];
+  "v6" -> "n1" [label="D"];
+  "n1" -> "n2" [label="D"];
+  "n2" -> "n3" [label="D"];
+  "n3" -> "n4" [label="D"];
+}

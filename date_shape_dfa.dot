@@ -1,0 +1,28 @@
+digraph "Date (shape DD/MM/YYYY)" {
+  rankdir=LR; bgcolor=white;
+  node [shape=circle fontname="Helvetica" fontsize=11];
+  edge [fontname="Helvetica" fontsize=10];
+  start [shape=point width=0.08];
+  "d0" [shape=circle];
+  "d1" [shape=circle];
+  "d2" [shape=circle];
+  "d3" [shape=circle];
+  "d4" [shape=circle];
+  "d5" [shape=circle];
+  "d6" [shape=circle];
+  "d7" [shape=circle];
+  "d8" [shape=circle];
+  "d9" [shape=circle];
+  "d10" [shape=doublecircle];
+  start -> "d0";
+  "d0" -> "d1" [label="D"];
+  "d1" -> "d2" [label="D"];
+  "d2" -> "d3" [label="/"];
+  "d3" -> "d4" [label="D"];
+  "d4" -> "d5" [label="D"];
+  "d5" -> "d6" [label="/"];
+  "d6" -> "d7" [label="D"];
+  "d7" -> "d8" [label="D"];
+  "d8" -> "d9" [label="D"];
+  "d9" -> "d10" [label="D"];
+}
