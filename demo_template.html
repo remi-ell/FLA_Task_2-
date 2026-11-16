@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Finite-automata validators - live demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+ body{font-family:"Segoe UI",Helvetica,Arial,sans-serif;margin:0;background:#f5f6f8;color:#1c2230}
+ header{background:#283c63;color:#fff;padding:14px 24px}
+ header h1{margin:0;font-size:20px} header p{margin:4px 0 0;font-size:13px;opacity:.85}
+ main{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:18px;padding:18px 24px}
+ @media(max-width:800px){main{grid-template-columns:1fr}}
+ .card{background:#fff;border:1px solid #dde1e7;border-radius:8px;padding:14px}
+ label{font-size:13px;font-weight:600;display:block;margin:10px 0 4px}
+ select,input{width:100%;box-sizing:border-box;padding:8px;font-size:15px;border:1px solid #bfc6d1;border-radius:6px;font-family:Consolas,monospace}
+ .verdict{margin-top:12px;padding:10px;border-radius:6px;font-weight:700;text-align:center}
+ .ok{background:#e2f3e6;color:#17692d}.bad{background:#fbe4e4;color:#9b1c1c}
+ table{border-collapse:collapse;width:100%;font-size:13px;font-family:Consolas,monospace;margin-top:10px}
+ td,th{border-bottom:1px solid #eceff3;padding:4px 6px;text-align:left}
+ .chips span{display:inline-block;margin:3px;padding:3px 8px;border-radius:12px;font-size:12px;cursor:pointer;font-family:Consolas,monospace}
+ .a{background:#e2f3e6}.r{background:#fbe4e4}
+ #diagram svg{max-width:100%;height:auto}
+ #diagram .cur ellipse{fill:#ffd54f!important}
+ #diagram .visited ellipse{fill:#e6eefc}
+ small{color:#5b6473}
+</style></head><body>
+<header><h1>Automata for input validation &mdash; live demo</h1>
+<p>21CSC301T Formal Language and Automata &middot; CLA-2 Task 2 &middot; Remiel Debora E (RA2411026050268)</p></header>
+<main>
+<div class="card">
+ <label for="app">Application</label><select id="app"></select>
+ <label for="inp">Input string</label><input id="inp" autocomplete="off" spellcheck="false">
+ <div id="verdict" class="verdict"></div>
+ <label>Examples (click to try)</label><div class="chips" id="chips"></div>
+ <p><small id="info"></small></p>
+</div>
+<div class="card">
+ <div id="diagram"></div>
+ <table><thead><tr><th>#</th><th>state</th><th>char</th><th>class</th><th>next</th></tr></thead><tbody id="trace"></tbody></table>
+</div>
+</main>
+<script>
+const A = __JSON__;
+const SVG = __SVG__;
+const CLASSIFY = {
+ plate: c => /[A-Z]/.test(c) ? "A" : /[0-9]/.test(c) ? "D" : "O",
+ mobile: c => c === "+" ? "PLUS" : c === "0" ? "ZERO" : c === "1" ? "ONE" : c === "9" ? "NINE" :
+              /[678]/.test(c) ? "HI" : /[2-5]/.test(c) ? "MID" : "O",
+ date: c => /[0-9\/]/.test(c) ? c : "other"
+};
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const sel = document.getElementById("app"), inp = document.getElementById("inp");
+for (const k in A) sel.add(new Option(A[k].title, k));
+function run(){
+ const k = sel.value, d = A[k], s = inp.value;
+ let st = d.start; const rows = [], visited = new Set([st]);
+ [...s].forEach((ch, i) => {
+   const sym = CLASSIFY[k](ch);
+   const nx = d.alphabet.includes(sym) ? (d.delta[st + "|" + sym] || "trap") : "trap";
+   rows.push(`<tr><td>${i+1}</td><td>${st}</td><td>${ch === " " ? "&#9251;" : esc(ch)}</td><td>${sym}</td><td>${nx}</td></tr>`);
+   st = nx; visited.add(st);
+ });
+ const ok = d.accepting.includes(st);
+ const v = document.getElementById("verdict");
+ v.className = "verdict " + (ok ? "ok" : "bad");
+ v.textContent = (ok ? "ACCEPTED" : "REJECTED") + " - final state " + st;
+ document.getElementById("trace").innerHTML = rows.join("");
+ document.querySelectorAll("#diagram g.node").forEach(g => {
+   const t = g.querySelector("title").textContent;
+   g.classList.toggle("cur", t === st);
+   g.classList.toggle("visited", visited.has(t) && t !== st);
+ });
+}
+function load(){
+ const k = sel.value, d = A[k];
+ document.getElementById("diagram").innerHTML = SVG[k] ||
+   "";
+ const chip = (x, c) => `<span class="${c}" data-v="${esc(x)}">${x === "" ? "(empty)" : esc(x)}</span>`;
+ document.getElementById("chips").innerHTML =
+   d.examples.accept.map(x => chip(x, "a")).join("") + d.examples.reject.map(x => chip(x, "r")).join("");
+ document.querySelectorAll("#chips span").forEach(sp => sp.onclick = () => { inp.value = sp.dataset.v; run(); });
+ document.getElementById("info").textContent =
+   d.name + " - " + d.states + " states incl. trap; alphabet {" + d.alphabet.join(", ") + "}";
+ inp.value = d.examples.accept[0]; run();
+}
+sel.onchange = load; inp.oninput = run;
+const h = new URLSearchParams(location.hash.slice(1));
+if (h.get("app") && A[h.get("app")]) sel.value = h.get("app");
+load();
+if (h.has("s")) { inp.value = h.get("s"); run(); }
+</script></body></html>
